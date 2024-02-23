@@ -37,15 +37,12 @@ class DemoApplicationTests {
 		ResponseEntity<Book> getBookByTagResponse =
 				rest.getForEntity("/api/tags/Tag3", Book.class);
 
-		System.out.println(getBookByTagResponse);
 		assertTrue(getBookByTagResponse.getStatusCode().is2xxSuccessful(), "Unexpected status code: " + getBookByTagResponse.getStatusCode());
 		Book getBookByTagResponseBody = getBookByTagResponse.getBody();
 
     assert getBookByTagResponseBody != null;
-		System.out.println(getBookByTagResponseBody.getAuthor() + " " + getBookByTagResponseBody.getTitle());
-
+		
 		assertEquals("War and Peace", getBookByTagResponseBody.getTitle());
-
 		rest.delete("/api/book/0");
 	}
 }
