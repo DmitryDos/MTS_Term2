@@ -11,12 +11,4 @@
 	<modules>
 		<module>book-service</module>
 	</modules>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
-		</dependency>
-	</dependencies>
-
 </project>

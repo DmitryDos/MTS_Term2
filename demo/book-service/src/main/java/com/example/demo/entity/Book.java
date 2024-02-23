@@ -18,7 +18,9 @@ public class Book extends BookWithoutId{
    public Book() {}
 
    public Book(String author, String title, Set<String> tags, long id) {
-      super(author, title, tags);
+      this.author = author;
+      this.title = title;
+      this.tags = tags;
       this.id = id;
    }
 

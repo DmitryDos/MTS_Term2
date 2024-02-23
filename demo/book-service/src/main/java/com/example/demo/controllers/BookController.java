@@ -1,18 +1,15 @@
 package com.example.demo.controllers;
 
-import com.example.demo.bookRepository.BookRepository;
 import com.example.demo.bookRepository.exceptions.BookNotFoundException;
 import com.example.demo.controllers.request.CreateBookRequest;
 import com.example.demo.controllers.request.FindBookByTagRequest;
-import com.example.demo.controllers.request.GetBookRequest;
 import com.example.demo.controllers.request.UpdateBookRequest;
-import com.example.demo.controllers.response.GetBookResponse;
 import com.example.demo.entity.Book;
 import com.example.demo.entity.BookWithoutId;
 import com.example.demo.service.BookService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +44,6 @@ public class BookController {
       @Valid CreateBookRequest request
   ) {
     try {
-
       BookWithoutId book = new BookWithoutId(request.author, request.title, request.tags);
       long id = bookService.create(book);
       return ResponseEntity.ok(id);
@@ -56,12 +52,13 @@ public class BookController {
     }
   }
 
-  @GetMapping("/book")
+  @GetMapping("/tags/{tag}")
   public ResponseEntity<?> getBookByTag(
-      @RequestBody FindBookByTagRequest request
+      @NotNull
+      @PathVariable String tag
   ) {
     try {
-      Book book = bookService.getByTag(request.tag);
+      Book book = bookService.getByTag(tag);
       return ResponseEntity.ok(book);
     } catch (BookNotFoundException e) {
       return ResponseEntity.status(422).body(e);
@@ -78,5 +75,13 @@ public class BookController {
   ) throws BookNotFoundException {
     Book book = new Book(request.author, request.title, request.tags, id);
     bookService.update(book);
+  }
+
+  @DeleteMapping("/book/{id}")
+  public void deleteBook(
+      @NotNull
+      @PathVariable Long id
+  ) throws BookNotFoundException {
+    bookService.delete(id);
   }
 }

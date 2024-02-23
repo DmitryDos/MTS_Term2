@@ -39,9 +39,9 @@ public class InMemoryBookRepository implements BookRepository {
   }
   @Override
   public Book getByTag(String tag) throws BookNotFoundException {
-    for (Book book : books.values()) {
-      if (book.getTags().contains(tag)) {
-        return book;
+    for (Long id : books.keySet()) {
+      if (books.get(id).getTags().contains(tag)) {
+        return books.get(id);
       }
     }
     throw new BookNotFoundException("Book have not been found by Id");

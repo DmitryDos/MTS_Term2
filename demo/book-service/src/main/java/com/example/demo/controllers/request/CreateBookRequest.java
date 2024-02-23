@@ -11,4 +11,10 @@ public class CreateBookRequest {
   public String title;
   @NotNull
   public Set<String> tags;
+
+  public CreateBookRequest(String author, String title, Set<String> tags) {
+    this.author = author;
+    this.title = title;
+    this.tags = tags;
+  }
 }
