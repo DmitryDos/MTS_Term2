@@ -87,7 +87,6 @@
 						<configuration>
 							<rules>
 								<rule>
-									<element>PACKAGE</element>
 									<limits>
 										<limit>
 											<counter>LINE</counter>
