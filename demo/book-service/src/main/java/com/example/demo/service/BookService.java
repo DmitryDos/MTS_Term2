@@ -15,7 +15,7 @@ public class BookService {
   private final BookRepository bookRepository;
 
   @Autowired
-  public BookService(@Qualifier("in-mem") BookRepository bookRepository) {
+  public BookService(BookRepository bookRepository) {
     this.bookRepository = bookRepository;
   }
 
