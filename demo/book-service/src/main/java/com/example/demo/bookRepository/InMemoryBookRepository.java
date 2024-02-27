@@ -3,9 +3,7 @@ package com.example.demo.bookRepository;
 import com.example.demo.bookRepository.exceptions.BookNotFoundException;
 import com.example.demo.entity.Book;
 import com.example.demo.entity.BookWithoutId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -13,19 +11,17 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Repository
-@Component("in-mem")
+@Component
 public class InMemoryBookRepository implements BookRepository {
 
   private Map<Long, Book> books = new ConcurrentHashMap<>();
 
   private final AtomicLong nextId = new AtomicLong(0);
 
-  @Override
   public long generateId() {
     return nextId.getAndIncrement();
   }
-  @Override
+
   public List<Book> getAll() {
     return new ArrayList<>(books.values());
   }
