@@ -10,7 +10,6 @@ import java.util.List;
 @Component
 public interface BookRepository {
   List<Book> getAll();
-  long generateId();
   Book getById(long id) throws BookNotFoundException;
   Book getByTag(String tag) throws BookNotFoundException;
   long create(BookWithoutId bookWithoutId);
