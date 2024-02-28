@@ -1,5 +1,4 @@
 HELP.md
-target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -31,3 +30,36 @@ build/
 
 ### VS Code ###
 .vscode/
+
+.*.md.html
+.DS_Store
+.attach_pid*
+.classpath
+.factorypath
+.gradle
+.idea
+.metadata
+.project
+.recommenders
+.settings
+.springBeans
+/code
+MANIFEST.MF
+_site/
+activemq-data
+bin
+!/**/src/**/bin
+!/**/src/**/build
+build.log
+dependency-reduced-pom.xml
+dump.rdb
+interpolated*.xml
+lib/
+manifest.yml
+out
+overridedb.*
+target
+.flattened-pom.xml
+secrets.yml
+.gradletasknamecache
+.sts4-cache
