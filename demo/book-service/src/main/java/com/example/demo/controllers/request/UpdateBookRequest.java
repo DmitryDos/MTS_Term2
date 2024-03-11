@@ -1,18 +1,20 @@
 package com.example.demo.controllers.request;
 
+import com.example.demo.entity.Author;
+import com.example.demo.entity.Tag;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.Set;
 
 public class UpdateBookRequest {
   @NotNull
-  public String author;
+  public Author author;
   @NotNull
   public String title;
   @NotNull
-  public Set<String> tags;
+  public Set<Tag> tags;
 
-  public UpdateBookRequest(String author, String title, Set<String> tags) {
+  public UpdateBookRequest(Author author, String title, Set<Tag> tags) {
     this.author = author;
     this.title = title;
     this.tags = tags;

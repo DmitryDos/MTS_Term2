@@ -1,33 +1,42 @@
 package com.example.demo.entity;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.Set;
 
-@Component
-@Getter
+@Entity
 @Setter
-public class Book extends BookWithoutId{
-   private long id;
-   private String author;
+@Getter
+@Table(name = "books")
+public class Book {
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   protected long id;
+
+   @ManyToOne(fetch = FetchType.EAGER)
+   @JoinColumn(name = "author_id", insertable = false, updatable = false)
+   @NotNull(message = "Book author have to be filled")
+   private Author author;
+
+   @NotNull(message = "Book title have to be filled")
    private String title;
-   private Set<String> tags;
 
-   public Book() {}
+   @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+   @JoinTable(
+       name = "tag_book",
+       joinColumns = @JoinColumn(name = "book_id"),
+       inverseJoinColumns = @JoinColumn(name = "tag_id")
+   )
+   private Set<Tag> tags = new HashSet<>();
 
-   public Book(String author, String title, Set<String> tags, long id) {
+   protected Book() {}
+
+   public Book(Author author, String title) {
       this.author = author;
       this.title = title;
-      this.tags = tags;
-      this.id = id;
-   }
-
-   public Book(BookWithoutId book, long id) {
-      this.author = book.getAuthor();
-      this.title = book.getTitle();
-      this.tags = book.getTags();
-      this.id = id;
    }
 }
