@@ -2,30 +2,37 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
+
 @Entity
+@Table(name = "books")
 @Setter
 @Getter
-@Table(name = "books")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Book {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
-   protected long id;
+   private long id;
 
    @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "author_id", insertable = false, updatable = false)
-   @NotNull(message = "Book author have to be filled")
    private Author author;
 
-   @NotNull(message = "Book title have to be filled")
+   @Setter
+   @Column(name = "author_id")
+   private Long authorId;
+
    private String title;
 
-   @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+   @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
    @JoinTable(
        name = "tag_book",
        joinColumns = @JoinColumn(name = "book_id"),
@@ -33,10 +40,14 @@ public class Book {
    )
    private Set<Tag> tags = new HashSet<>();
 
-   protected Book() {}
-
-   public Book(Author author, String title) {
-      this.author = author;
+   public Book(String title, Long authorId) {
+      this.authorId = authorId;
       this.title = title;
+   }
+   public void addTag(Tag tag) {
+      tags.add(tag);
+   }
+   public void removeTag(Tag tag) {
+      tags.remove(tag);
    }
 }

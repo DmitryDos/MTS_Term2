@@ -30,17 +30,17 @@ class BookServiceTest extends DatabaseSuite {
 
   @Test
   void CreateBookTest() throws AuthorNotFoundException {
-    var author = authorService.create(new Author("FirstName1", "SurName1"));
-    var book = bookService.create(new Book(author, "bookName1"));
+    var author = authorService.create("FirstName1", "SurName1");
+    var book = bookService.create( "bookName1", author.getId());
 
     assertEquals(book.getTitle(), "bookName1");
   }
 
   @Test
   void getBookByIdTest() throws BookNotFoundException, AuthorNotFoundException {
-    var author = authorService.create(new Author("FirstName2", "SurName2"));
+    var author = authorService.create("FirstName2", "SurName2");
 
-    var book = bookService.create(new Book(author, "bookName2"));
+    var book = bookService.create("bookName2", author.getId());
 
     Book retrievedBook = bookService.findById(book.getId());
 
@@ -52,9 +52,9 @@ class BookServiceTest extends DatabaseSuite {
 
   @Test
   void updateBookTest() throws BookNotFoundException, AuthorNotFoundException {
-    var author = authorService.create(new Author("FirstName3", "SurName3"));
+    var author = authorService.create("FirstName3", "SurName3");
 
-    var book = bookService.create(new Book(author, "bookName3"));
+    var book = bookService.create("bookName3", author.getId());
 
     bookService.updateBookTitle(book.getId(), "New book Title");
 
@@ -65,9 +65,9 @@ class BookServiceTest extends DatabaseSuite {
 
   @Test
   void deleteBookTest() throws BookNotFoundException, AuthorNotFoundException {
-    var author = authorService.create(new Author("FirstName4", "SurName4"));
+    var author = authorService.create("FirstName4", "SurName4");
 
-    var book = bookService.create(new Book(author, "bookName4"));
+    var book = bookService.create("bookName4", author.getId());
 
     bookService.delete(book.getId());
 

@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Author;
+import com.example.demo.entity.Tag;
 import com.example.demo.repositories.BookRepository;
+import com.example.demo.repositories.TagRepository;
 import com.example.demo.repositories.exceptions.BookNotFoundException;
 import com.example.demo.entity.Book;
 import jakarta.transaction.Transactional;
@@ -13,10 +15,11 @@ import java.util.List;
 @Service
 public class BookService {
   private final BookRepository bookRepository;
-
+  private final TagRepository tagRepository;
   @Autowired
-  public BookService(BookRepository bookRepository) {
+  public BookService(BookRepository bookRepository, TagRepository tagRepository) {
     this.bookRepository = bookRepository;
+    this.tagRepository = tagRepository;
   }
 
   public List<Book> getAll() {
@@ -24,11 +27,15 @@ public class BookService {
   }
 
   public Book findById(long id) throws BookNotFoundException {
-    return bookRepository.findById(id).orElseThrow();
+    try {
+      return this.bookRepository.findById(id).orElseThrow();
+    } catch (Exception e) {
+      throw (new BookNotFoundException("Book not found"));
+    }
   }
 
-  public Book create(Book book) {
-    return bookRepository.save(book);
+  public Book create(String title, Long authorId) {
+    return this.bookRepository.save(new Book(title, authorId));
   }
 
   @Transactional
@@ -38,15 +45,32 @@ public class BookService {
     bookRepository.save(book);
   }
   @Transactional
-  public void updateBookAuthor(Long bookId, Author newAuthor) {
+  public void updateBookAuthor(Long bookId, Long authorId) {
     Book book = bookRepository.findById(bookId).orElseThrow();
-    book.setAuthor(newAuthor);
+    book.setAuthorId(authorId);
     bookRepository.save(book);
   }
 
   @Transactional
   public void delete(Long bookId) {
+    bookRepository.deleteById(bookId);
+  }
+
+  @Transactional
+  public void addTag(Long bookId, Long tagId) {
     Book book = bookRepository.findById(bookId).orElseThrow();
-    bookRepository.delete(book);
+    Tag tag = tagRepository.findById(tagId).orElseThrow();
+
+    book.addTag(tag);
+    bookRepository.save(book);
+  }
+
+  @Transactional
+  public void removeTag(Long bookId, Long tagId) {
+    Book book = bookRepository.findById(bookId).orElseThrow();
+    Tag tag = tagRepository.findById(tagId).orElseThrow();
+
+    book.removeTag(tag);
+    bookRepository.save(book);
   }
 }

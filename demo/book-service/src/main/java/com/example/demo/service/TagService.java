@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.controllers.response.CreateTagResponse;
+import com.example.demo.controllers.response.FindTagResponse;
 import com.example.demo.entity.Tag;
 import com.example.demo.repositories.TagRepository;
 import jakarta.transaction.Transactional;
@@ -25,12 +27,12 @@ public class TagService {
 
   @Transactional
   public Tag findById(long id) {
-    return tagRepository.findById(id).orElseThrow();
+    return this.tagRepository.findById(id).orElseThrow();
   }
 
   @Transactional
-  public Tag create(Tag tag) {
-    return tagRepository.save(tag);
+  public Tag create(String name) {
+    return this.tagRepository.save(new Tag(name));
   }
 
   @Transactional

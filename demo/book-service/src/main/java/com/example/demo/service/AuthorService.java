@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.controllers.response.CreateAuthorResponse;
+import com.example.demo.controllers.response.CreateTagResponse;
 import com.example.demo.entity.Author;
 import com.example.demo.repositories.AuthorRepository;
 import jakarta.transaction.Transactional;
@@ -26,8 +28,8 @@ public class AuthorService {
     return authorRepository.findById(id).orElseThrow();
   }
 
-  public Author create(Author author) {
-    return authorRepository.save(author);
+  public Author create(String firstName, String secondName) {
+    return authorRepository.save(new Author(firstName, secondName));
   }
 
   @Transactional

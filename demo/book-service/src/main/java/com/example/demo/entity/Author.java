@@ -1,9 +1,15 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -15,17 +21,12 @@ public class Author {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
+  @Column(name = "first_name")
   private String firstName;
-  private String lastName;
-  @OneToMany(mappedBy = "author", orphanRemoval = true, fetch = FetchType.LAZY)
-  private Set<Book> books;
-  protected Author() {}
 
-  public Author(String firstName, String lastName, Set<Book> books) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.books = books;
-  }
+  @Column(name = "last_name")
+  private String lastName;
+  protected Author() {}
 
   public Author(String firstName, String lastName) {
     this.firstName = firstName;
