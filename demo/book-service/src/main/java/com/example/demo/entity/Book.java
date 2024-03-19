@@ -1,33 +1,53 @@
 package com.example.demo.entity;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.Set;
 
-@Component
-@Getter
+
+@Entity
+@Table(name = "books")
 @Setter
-public class Book extends BookWithoutId{
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Book {
+   @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
    private long id;
-   private String author;
+
+   @ManyToOne(fetch = FetchType.EAGER)
+   @JoinColumn(name = "author_id", insertable = false, updatable = false)
+   private Author author;
+
+   @Setter
+   @Column(name = "author_id")
+   private Long authorId;
+
    private String title;
-   private Set<String> tags;
 
-   public Book() {}
+   @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+   @JoinTable(
+       name = "tag_book",
+       joinColumns = @JoinColumn(name = "book_id"),
+       inverseJoinColumns = @JoinColumn(name = "tag_id")
+   )
+   private Set<Tag> tags = new HashSet<>();
 
-   public Book(String author, String title, Set<String> tags, long id) {
-      this.author = author;
+   public Book(String title, Long authorId) {
+      this.authorId = authorId;
       this.title = title;
-      this.tags = tags;
-      this.id = id;
    }
-
-   public Book(BookWithoutId book, long id) {
-      this.author = book.getAuthor();
-      this.title = book.getTitle();
-      this.tags = book.getTags();
-      this.id = id;
+   public void addTag(Tag tag) {
+      tags.add(tag);
+   }
+   public void removeTag(Tag tag) {
+      tags.remove(tag);
    }
 }

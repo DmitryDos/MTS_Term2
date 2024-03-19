@@ -9,17 +9,15 @@
     <thead>
     <tr>
         <th>ID</th>
-        <th>Автор</th>
-        <th>Название</th>
-        <th>Тэги</th>
+        <th>Имя</th>
+        <th>Фамилия</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="book:${books}">
-        <td th:text="${book.id}"></td>
-        <td th:text="${book.author.firstName}"></td>
-        <td th:text="${book.title}"></td>
-        <td th:text="${book.tags.size()}"></td>
+    <tr th:each="author:${authors}">
+        <td th:text="${author.getId()}"></td>
+        <td th:text="${author.getFirstName()}"></td>
+        <td th:text="${author.getLastName()}"></td>
     </tr>
     </tbody>
 </table>
