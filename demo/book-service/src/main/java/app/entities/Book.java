@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,6 +40,11 @@ public class Book {
        inverseJoinColumns = @JoinColumn(name = "tag_id")
    )
    private Set<Tag> tags = new HashSet<>();
+
+   @Setter
+   @Column(name = "rating", nullable = false, precision = 3, scale = 2)
+   private BigDecimal rating = BigDecimal.ZERO;
+
 
    public Book(String title, Long authorId) {
       this.authorId = authorId;
