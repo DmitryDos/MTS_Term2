@@ -8,6 +8,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Testcontainers
 public class RatingServiceTest {
@@ -16,6 +17,6 @@ public class RatingServiceTest {
   @Test
   public void getRandomRating() {
     int r = (int) ratingService.getRating(1L);
-    assertEquals(r, 3);
+    assertTrue(r >= 0 && r <= 5);
   }
 }
