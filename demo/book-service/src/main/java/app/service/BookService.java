@@ -16,10 +16,8 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +25,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpHeaders;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -129,6 +128,15 @@ public class BookService {
     Tag tag = tagRepository.findById(tagId).orElseThrow();
 
     book.removeTag(tag);
+    bookRepository.save(book);
+  }
+
+  @Transactional
+  public void updateRating(Long bookId, Double rating) {
+    var book = bookRepository.findById(bookId).orElseThrow();
+
+    book.setRating(BigDecimal.valueOf(rating));
+
     bookRepository.save(book);
   }
 }
