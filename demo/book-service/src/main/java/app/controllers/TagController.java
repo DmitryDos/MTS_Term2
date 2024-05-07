@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/tags")
 public class TagController {
   private final TagService tagService;
-
   @Autowired
   public TagController(TagService tagService) {
     this.tagService = tagService;

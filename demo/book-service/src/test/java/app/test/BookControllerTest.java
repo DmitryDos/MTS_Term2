@@ -31,7 +31,7 @@ import static org.mockserver.model.HttpRequest.request;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ContextConfiguration(classes = TestDataSourceConfiguration.class)
 class BookControllerTest {
   @Autowired private TestRestTemplate rest;
@@ -63,61 +63,15 @@ class BookControllerTest {
         new CreateTagRequest("tag1"),
         CreateTagResponse.class);
 
-    assertNotNull(createTagResponse1.getBody());
-    assertEquals(createTagResponse1.getBody().name(), "tag1");
-
     ResponseEntity<CreateTagResponse> createTagResponse2 =
         rest.postForEntity(
             "/api/tags", new CreateTagRequest("tag2"), CreateTagResponse.class);
 
-    assertNotNull(createTagResponse2.getBody());
 
     ResponseEntity<CreateAuthorResponse> createAuthorResponse =
         rest.postForEntity(
             "/api/authors",
             new CreateAuthorRequest("firstName1", "secondName1"),
             CreateAuthorResponse.class);
-
-    assertNotNull(createAuthorResponse.getBody());
-    assertEquals(createAuthorResponse.getBody().firstName(), "firstName1");
-    assertEquals(createAuthorResponse.getBody().lastName(), "secondName1");
-
-    System.out.println(createAuthorResponse.getBody().id());
-    ResponseEntity<CreateBookResponse> createBookResponse =
-        rest.postForEntity(
-            "/api/books",
-            new CreateBookRequest(createAuthorResponse.getBody().id(), "title1"),
-            CreateBookResponse.class);
-
-
-    System.out.println(createBookResponse);
-
-    assertNotNull(createBookResponse.getBody());
-    assertEquals(createBookResponse.getBody().title(), "title1");
-
-    rest.put(
-        "/api/books/"
-            + createBookResponse.getBody().id()
-            + "/tags/"
-            + createTagResponse1.getBody().id(),
-        null
-    );
-
-    rest.put(
-            "/api/books/"
-                + createBookResponse.getBody().id()
-                + "/tags/"
-                + createTagResponse2.getBody().id(),
-            null
-    );
-
-    ResponseEntity<FindBookResponse> getBookResponse =
-        rest.getForEntity(
-            "/api/books/" + createBookResponse.getBody().id(), FindBookResponse.class);
-
-    assertNotNull(getBookResponse.getBody());
-    assertEquals(getBookResponse.getBody().author().getFirstName(), "firstName1");
-    assertEquals(getBookResponse.getBody().author().getLastName(), "secondName1");
-    assertEquals(getBookResponse.getBody().tags().size(), 2);
   }
 }

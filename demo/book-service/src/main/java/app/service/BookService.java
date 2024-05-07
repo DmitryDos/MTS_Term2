@@ -1,8 +1,12 @@
 package app.service;
 
 import app.controllers.request.IfAuthorIsOwnerRequest;
+import app.controllers.response.BuyBookResponse;
+import app.controllers.response.CreateBookResponse;
 import app.controllers.response.IfAuthorIsOwnerResponse;
+import app.controllers.response.MessageResponse;
 import app.entities.Author;
+import app.entities.PaymentStatus;
 import app.entities.Tag;
 import app.repositories.AuthorRepository;
 import app.repositories.BookRepository;
@@ -27,6 +31,7 @@ import org.springframework.http.HttpHeaders;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class BookService {
@@ -60,7 +65,6 @@ public class BookService {
   @Retry(name = "createBook", fallbackMethod = "fallbackRetry")
   @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Throwable.class})
   public Book create(String title, Long authorId, String requestId) throws AuthorNotFoundException, AuthorIsNotOwnerException {
-
     try {
       Author author = authorRepository.findById(authorId).orElseThrow();
 
@@ -138,5 +142,33 @@ public class BookService {
     book.setRating(BigDecimal.valueOf(rating));
 
     bookRepository.save(book);
+  }
+
+  public BuyBookResponse buyById(Long bookId) throws BookNotFoundException {
+    var book = bookRepository.findById(bookId).orElse(null);
+
+    if (book == null) {
+      throw new BookNotFoundException(bookId.toString() + " book not found");
+    }
+
+    switch (book.getStatus()) {
+      case PAYMENT_PENDING -> {
+        return new BuyBookResponse("Payment is already in progress");
+      }
+      case PAYMENT_SUCCEED -> {
+        return new BuyBookResponse("Payment has been already finished");
+      }
+    }
+
+    book.setPaymentStatusPending(UUID.randomUUID());
+    bookRepository.save(book);
+
+    return new BuyBookResponse("Waiting for payment...");
+  }
+
+  public void updateBookPurchaseStatus(long bookId, PaymentStatus status) throws BookNotFoundException {
+    var book = findById(bookId);
+
+    book.setStatus(status);
   }
 }

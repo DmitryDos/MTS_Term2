@@ -1,79 +1,98 @@
-package app.test.kafka;
+package app;
 
-import app.kafka.RatingBookMessageRequest;
-import app.producers.BookRatingProducer;
+import app.consumer.PurchaseConsumer;
+import app.exceptions.UserNotFoundException;
+import app.scheduler.OutboxScheduler;
+import app.scheduler.SchedulerConfig;
+import app.service.PurchaseService;
+import app.service.request.MessageRequest;
+import app.service.response.MessageResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.UUID;
 import java.util.Properties;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest(
-    classes = {BookRatingProducer.class},
-    properties = {"topic-to-send-message=some-test-topic"})
+    properties = {
+        "topic-to-send-message=test-response-topic",
+        "topic-to-consume-message=test-request-topic",
+        "spring.kafka.consumer.auto-offset-reset=earliest"
+    })
 @Import({
+    PurchaseConsumer.class,
     KafkaAutoConfiguration.class,
-    RatingProducerTest.ObjectMapperTestConfig.class,
+    SchedulerConfig.class,
+    OutboxScheduler.class
 })
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 @Testcontainers
-public class RatingProducerTest {
-  @TestConfiguration
-  static class ObjectMapperTestConfig {
-    @Bean
-    public ObjectMapper objectMapper() {
-      return new ObjectMapper();
-    }
-  }
-
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+public class SuccessText {
   @Container
   @ServiceConnection
   public static final KafkaContainer KAFKA =
       new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.0"));
 
+  @Autowired private PurchaseService bookService;
+  @Autowired private PurchaseConsumer purchaseConsumer;
   @Autowired
-  private BookRatingProducer bookRatingProducer;
-  @Autowired private ObjectMapper objectMapper;
+  private ObjectMapper objectMapper;
+  @Autowired private KafkaTemplate<String, String> kafkaTemplate;
 
   @Test
-  void shouldSendMessageToKafkaSuccessfully() {
-    assertDoesNotThrow(() -> bookRatingProducer.getRating(1L));
+  void shouldSendSuccessMessageToKafkaE2ETest()
+      throws JsonProcessingException, InterruptedException, UserNotFoundException {
+    var uuid = UUID.randomUUID().toString();
 
-    KafkaTestConsumer consumer =
-        new KafkaTestConsumer(KAFKA.getBootstrapServers(), "some-group-id");
-    consumer.subscribe(List.of("some-test-topic"));
+    bookService.setAccountMoney(1000L);
+
+    kafkaTemplate.send(
+        "test-request-topic", objectMapper.writeValueAsString(new MessageRequest(1L, uuid)));
+
+    KafkaTestConsumer consumer = new KafkaTestConsumer(KAFKA.getBootstrapServers(), "some-group");
+    consumer.subscribe(List.of("test-response-topic"));
+
+    Thread.sleep(10_000);
 
     ConsumerRecords<String, String> records = consumer.poll();
-    assertEquals(1, records.count());
     records
         .iterator()
         .forEachRemaining(
             record -> {
-              RatingBookMessageRequest message;
+              MessageResponse message;
               try {
-                message = objectMapper.readValue(record.value(), RatingBookMessageRequest.class);
+                message = objectMapper.readValue(record.value(), MessageResponse.class);
               } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
               }
-              assertEquals(new RatingBookMessageRequest(1L), message);
+
+              System.out.println(message);
+              assertTrue(message.success());
+              assertEquals(message.message(), "Success");
             });
   }
 

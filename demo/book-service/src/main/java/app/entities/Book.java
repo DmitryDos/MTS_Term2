@@ -1,5 +1,7 @@
 package app.entities;
 
+import app.controllers.response.BookStatusResponse;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +12,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Set;
-
+import java.util.UUID;
 
 @Entity
 @Table(name = "books")
@@ -18,7 +20,7 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Book {
+public class Book extends AbstractAggregateRoot<Book> {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private long id;
@@ -45,6 +47,17 @@ public class Book {
    @Column(name = "rating", nullable = false, precision = 3, scale = 2)
    private BigDecimal rating = BigDecimal.ZERO;
 
+   @Enumerated(EnumType.STRING)
+   @Setter
+   @Column(name = "status", nullable = false)
+   private PaymentStatus status = PaymentStatus.NO_PAYMENT;
+
+   public Book(String title, Long authorId, PaymentStatus paymentStatus) {}
+
+   public void setPaymentStatusPending(UUID messageId) {
+      this.setStatus(PaymentStatus.PAYMENT_PENDING);
+      registerEvent(new BookStatusResponse(this.id, this.status, messageId.toString()));
+   }
 
    public Book(String title, Long authorId) {
       this.authorId = authorId;
