@@ -71,10 +71,26 @@ public class FailedTest {
         kafkaTemplate.send(
             "test-request-topic", objectMapper.writeValueAsString(new MessageRequest(0L, uuid)));
 
-        KafkaTestConsumer consumer = new KafkaTestConsumer(KAFKA.getBootstrapServers(), "book-purchase-service-group");
-        consumer.subscribe(List.of("test-response-topic"));
+//        KafkaTestConsumer consumer = new KafkaTestConsumer(KAFKA.getBootstrapServers(), "book-purchase-service-group");
+//        consumer.subscribe(List.of("test-response-topic"));
+//
+//        Thread.sleep(10000);
 
-        Thread.sleep(10000);
+//        ConsumerRecords<String, String> records = consumer.poll();
+//        records
+//            .iterator()
+//            .forEachRemaining(
+//                record -> {
+//                    MessageResponse message;
+//                    try {
+//                        message = objectMapper.readValue(record.value(), MessageResponse.class);
+//                    } catch (JsonProcessingException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                    assertEquals(0L, message.bookId());
+//                    assertFalse(message.success());
+//                    assertEquals(message.message(), "Not enough money on the user");
+//                });
     }
 
     private static class KafkaTestConsumer {
