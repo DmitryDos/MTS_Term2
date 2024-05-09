@@ -49,10 +49,9 @@ import static org.mockserver.model.HttpRequest.request;
 
 @SpringBootTest(
     properties = {
-        "topic-to-send-buy-message=test-send-message",
-        "topic-to-consume-buy-message=test-consume-message",
+        "topic-to-send-buy-message=some-test-topic",
         "spring.kafka.consumer.auto-offset-reset=earliest",
-        "spring.flyway.baseline-on-migrate=false",
+        "spring.kafka.consumer.group-id=some-group-id",
         "spring.flyway.enabled=false"
     })
 @Import({
@@ -96,7 +95,7 @@ public class PaymentTest {
 
   @Test
   void successMessage()
-      throws AuthorNotFoundException, BookNotFoundException, AuthorIsNotOwnerException {
+      throws AuthorNotFoundException, AuthorIsNotOwnerException {
     MockServerClient client = new MockServerClient(mockServer.getHost(), mockServer.getServerPort());
     client
         .when(

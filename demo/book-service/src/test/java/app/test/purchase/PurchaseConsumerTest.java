@@ -34,7 +34,7 @@ import org.testcontainers.utility.DockerImageName;
         "topic-to-send-message=test-send-message",
         "topic-to-consume-buy-message=test-consume-message",
         "spring.kafka.consumer.auto-offset-reset=earliest",
-        "spring.flyway.baseline-on-migrate = true",
+        "spring.flyway.baseline-on-migrate=true",
         "spring.flyway.enabled=false"
     })
 @Import({KafkaAutoConfiguration.class, PurchaseConsumerTest.ObjectMapperTestConfig.class, BookService.class})
