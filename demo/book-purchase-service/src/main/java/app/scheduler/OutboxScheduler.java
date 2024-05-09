@@ -23,7 +23,7 @@ public class OutboxScheduler {
       KafkaTemplate<String, String> kafkaTemplate,
       OutboxRepository outboxRepository,
       @Value("${" +
-          "topic-to-send-message}") String topic) {
+          "topic-to-send-buy-message}") String topic) {
     this.kafkaTemplate = kafkaTemplate;
     this.topic = topic;
     this.outboxRepository = outboxRepository;

@@ -49,9 +49,10 @@ import static org.mockserver.model.HttpRequest.request;
 
 @SpringBootTest(
     properties = {
-        "topic-to-send-message=test-send-message",
+        "topic-to-send-buy-message=test-send-message",
         "topic-to-consume-buy-message=test-consume-message",
-        "spring.kafka.consumer.auto-offset-reset=earliest"
+        "spring.kafka.consumer.auto-offset-reset=earliest",
+        "spring.flyway.enabled=false"
     })
 @Import({
     BookService.class,

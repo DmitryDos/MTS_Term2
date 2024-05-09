@@ -37,8 +37,8 @@ import java.util.Properties;
 
 @SpringBootTest(
     properties = {
-        "topic-to-send-message=test-response-topic",
-        "topic-to-consume-message=test-request-topic",
+        "topic-to-send-buy-message=test-response-topic",
+        "topic-to-consume-buy-message=test-request-topic",
         "spring.kafka.consumer.auto-offset-reset=earliest"
     })
 @Import({

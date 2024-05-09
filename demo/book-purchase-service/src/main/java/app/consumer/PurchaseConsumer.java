@@ -26,7 +26,7 @@ public class PurchaseConsumer {
     this.proceededMessages = new HashSet<>();
   }
 
-  @KafkaListener(topics = {"${topic-to-consume-message}"})
+  @KafkaListener(topics = {"${topic-to-consume-buy-message}"})
   @Transactional(propagation = Propagation.REQUIRED)
   public void consumeBookPurchaseResponse(String message) throws JsonProcessingException {
     MessageRequest parsedMessage =

@@ -30,7 +30,7 @@ import static org.mockito.Mockito.times;
 @SpringBootTest(
     classes = {PurchaseConsumer.class, PurchaseService.class},
     properties = {
-        "topic-to-consume-message=some-test-topic",
+        "topic-to-consume-buy-message=some-test-topic",
         "spring.kafka.consumer.auto-offset-reset=earliest"
     })
 @Import({KafkaAutoConfiguration.class, PurchaseConsumerTest.ObjectMapperTestConfig.class})
