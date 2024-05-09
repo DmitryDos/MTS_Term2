@@ -50,7 +50,7 @@ import java.util.Properties;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
 @Testcontainers
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class FailedTest {
     @Container @ServiceConnection
     public static final KafkaContainer KAFKA =
@@ -70,7 +70,7 @@ public class FailedTest {
         kafkaTemplate.send(
             "test-request-topic", objectMapper.writeValueAsString(new MessageRequest(0L, uuid)));
 
-        KafkaTestConsumer consumer = new KafkaTestConsumer(KAFKA.getBootstrapServers(), "some-group");
+        KafkaTestConsumer consumer = new KafkaTestConsumer(KAFKA.getBootstrapServers(), "book-purchase-service-group");
         consumer.subscribe(List.of("test-response-topic"));
 
         Thread.sleep(10000);
