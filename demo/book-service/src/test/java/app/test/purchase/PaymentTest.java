@@ -52,6 +52,7 @@ import static org.mockserver.model.HttpRequest.request;
         "topic-to-send-buy-message=test-send-message",
         "topic-to-consume-buy-message=test-consume-message",
         "spring.kafka.consumer.auto-offset-reset=earliest",
+        "spring.flyway.baseline-on-migrate=false",
         "spring.flyway.enabled=false"
     })
 @Import({
