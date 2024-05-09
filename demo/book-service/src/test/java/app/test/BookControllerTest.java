@@ -31,7 +31,7 @@ import static org.mockserver.model.HttpRequest.request;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @ContextConfiguration(classes = TestDataSourceConfiguration.class)
 class BookControllerTest {
   @Autowired private TestRestTemplate rest;
@@ -67,11 +67,5 @@ class BookControllerTest {
         rest.postForEntity(
             "/api/tags", new CreateTagRequest("tag2"), CreateTagResponse.class);
 
-
-    ResponseEntity<CreateAuthorResponse> createAuthorResponse =
-        rest.postForEntity(
-            "/api/authors",
-            new CreateAuthorRequest("firstName1", "secondName1"),
-            CreateAuthorResponse.class);
   }
 }

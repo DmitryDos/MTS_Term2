@@ -92,5 +92,69 @@ public class PaymentTest {
     registry.add("author-registry-service.service.base.url", mockServer::getEndpoint);
   }
 
-
+//  @Test
+//  void successMessage()
+//      throws AuthorNotFoundException, AuthorIsNotOwnerException {
+//    MockServerClient client = new MockServerClient(mockServer.getHost(), mockServer.getServerPort());
+//    client
+//        .when(
+//            request()
+//                .withMethod(String.valueOf(HttpMethod.POST))
+//                .withHeader("X-REQUEST-ID")
+//                .withPath("/api/author-registry-service"))
+//        .respond(
+//            new HttpResponse()
+//                .withBody("{\"isOwner\": \"true\"}")
+//                .withHeader("Content-Type", "application/json"));
+//
+//    var author = authorService.create("firstName1", "secondName1");
+//
+//    var uuid = UUID.randomUUID().toString();
+//    var book = bookService.create("title1", author.getId(), uuid);
+//
+//    KafkaTestConsumer consumer =
+//        new KafkaTestConsumer(KAFKA.getBootstrapServers(), "some-group-id");
+//    consumer.subscribe(List.of("some-test-topic"));
+//
+//    ConsumerRecords<String, String> records = consumer.poll();
+//    System.out.println(records);
+//
+//    records
+//        .iterator()
+//        .forEachRemaining(
+//            record -> {
+//              MessageRequest message;
+//              try {
+//                message = objectMapper.readValue(record.value(), MessageRequest.class);
+//              } catch (JsonProcessingException e) {
+//                throw new RuntimeException(e);
+//              }
+//              System.out.println(book.getId() + " " + message.bookId());
+//              assertEquals(book.getId(), message.bookId());
+//            });
+//  }
+//
+//  private static class KafkaTestConsumer {
+//    private final KafkaConsumer<String, String> consumer;
+//
+//    public KafkaTestConsumer(String bootstrapServers, String groupId) {
+//      Properties props = new Properties();
+//
+//      props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+//      props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+//      props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, org.apache.kafka.common.serialization.StringDeserializer.class.getName());
+//      props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+//      props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+//
+//      this.consumer = new KafkaConsumer<>(props);
+//    }
+//
+//    public void subscribe(List<String> topics) {
+//      consumer.subscribe(topics);
+//    }
+//
+//    public ConsumerRecords<String, String> poll() {
+//      return consumer.poll(Duration.ofSeconds(5));
+//    }
+//  }
 }

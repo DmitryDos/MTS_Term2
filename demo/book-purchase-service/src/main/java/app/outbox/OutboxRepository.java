@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface OutboxRepository extends JpaRepository<Outbox, Long> {
   List<Outbox> findAllBySendEquals(boolean send);
 }
