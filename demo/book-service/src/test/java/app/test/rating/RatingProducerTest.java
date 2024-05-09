@@ -1,4 +1,4 @@
-package app.test.kafka;
+package app.test.rating;
 
 import app.kafka.RatingBookMessageRequest;
 import app.producers.BookRatingProducer;
@@ -54,7 +54,7 @@ public class RatingProducerTest {
   @Autowired private ObjectMapper objectMapper;
 
   @Test
-  void shouldSendMessageToKafkaSuccessfully() {
+  void successMessage() {
     assertDoesNotThrow(() -> bookRatingProducer.getRating(1L));
 
     KafkaTestConsumer consumer =

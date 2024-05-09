@@ -1,0 +1,23 @@
+{
+  "properties": [
+    {
+      "name": "topic-to-consume-message",
+      "type": "java.lang.String",
+      "description": "Description for topic-to-consume-message."
+    },
+    {
+      "name": "topic-to-send-buy-message",
+      "type": "java.lang.String",
+      "description": "Description for topic-to-send-buy-message."
+    },
+    {
+      "name": "topic-to-consume-buy-message",
+      "type": "java.lang.String",
+      "description": "Description for topic-to-consume-buy-message."
+    },
+    {
+      "name": "topic-to-send-message",
+      "type": "java.lang.String",
+      "description": "Description for topic-to-send-message."
+    }
+  ] }

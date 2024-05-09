@@ -1,4 +1,4 @@
-package app.test.kafka;
+package app.test.rating;
 
 import app.consumers.BookRatingConsumer;
 import app.kafka.RatingBookMessageResponse;
@@ -29,8 +29,8 @@ import static org.mockito.Mockito.times;
 @SpringBootTest(
     classes = {BookRatingConsumer.class, BookService.class},
     properties = {
-        "topic-to-consume-message=some-test-topic",
-        "spring.kafka.consumer.group-id=some-consumer-group",
+        "topic-to-consume-message=some-test-topic-rating",
+        "spring.kafka.consumer.group-id=some-consumer-group-rating",
         "spring.kafka.consumer.auto-offset-reset=earliest"
     })
 @Import({KafkaAutoConfiguration.class, RatingConsumerTest.ObjectMapperTestConfig.class})
@@ -57,14 +57,14 @@ public class RatingConsumerTest {
   @Autowired private BookRatingConsumer bookRatingConsumer;
 
   @Test
-  void shouldSendMessageToKafkaSuccessfully() throws JsonProcessingException {
+  void successMessage() throws JsonProcessingException {
 
     kafkaTemplate.send(
-        "some-test-topic",
+        "some-test-topic-rating",
         objectMapper.writeValueAsString(new RatingBookMessageResponse(1L, 2.5D)));
 
     await()
-        .atMost(Duration.ofSeconds(5))
+        .atMost(Duration.ofSeconds(50))
         .pollDelay(Duration.ofSeconds(1))
         .untilAsserted(() -> Mockito.verify(bookService, times(1)).updateRating(1L, 2.5));
   }

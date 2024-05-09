@@ -1,5 +1,6 @@
 package app.controllers;
 
+import app.controllers.response.BuyBookResponse;
 import app.controllers.response.CreateBookResponse;
 import app.controllers.response.FindBookResponse;
 import app.entities.Book;
@@ -9,9 +10,12 @@ import app.repositories.exceptions.BookNotFoundException;
 import app.service.BookService;
 import app.controllers.request.CreateBookRequest;
 import app.controllers.request.UpdateBookRequest;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -84,5 +88,12 @@ public class BookController {
       @PathVariable Long tagId
   ) throws BookNotFoundException {
     bookService.removeTag(id, tagId);
+  }
+
+  @Operation(summary = "Buy a book by bookId")
+  @PostMapping("buy/{bookId}")
+  public BuyBookResponse buy(@NotNull @PathVariable("bookId") @Min(value = 0) Long bookId)
+      throws BookNotFoundException {
+    return this.bookService.buyById(bookId);
   }
 }
