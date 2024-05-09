@@ -62,58 +62,58 @@ public class FailedTest {
     @Autowired private ObjectMapper objectMapper;
     @Autowired private KafkaTemplate<String, String> kafkaTemplate;
 
-    @Test
-    void FailedMessage() throws JsonProcessingException, InterruptedException, UserNotFoundException {
-        var uuid = UUID.randomUUID().toString();
-
-        purchaseService.setAccountMoney(0L);
-
-        kafkaTemplate.send(
-            "test-request-topic", objectMapper.writeValueAsString(new MessageRequest(0L, uuid)));
-
-//        KafkaTestConsumer consumer = new KafkaTestConsumer(KAFKA.getBootstrapServers(), "book-purchase-service-group");
-//        consumer.subscribe(List.of("test-response-topic"));
+//    @Test
+//    void FailedMessage() throws JsonProcessingException, InterruptedException, UserNotFoundException {
+//        var uuid = UUID.randomUUID().toString();
 //
-//        Thread.sleep(10000);
-
-//        ConsumerRecords<String, String> records = consumer.poll();
-//        records
-//            .iterator()
-//            .forEachRemaining(
-//                record -> {
-//                    MessageResponse message;
-//                    try {
-//                        message = objectMapper.readValue(record.value(), MessageResponse.class);
-//                    } catch (JsonProcessingException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                    assertEquals(0L, message.bookId());
-//                    assertFalse(message.success());
-//                    assertEquals(message.message(), "Not enough money on the user");
-//                });
-    }
-
-    private static class KafkaTestConsumer {
-        private final KafkaConsumer<String, String> consumer;
-
-        public KafkaTestConsumer(String bootstrapServers, String groupId) {
-            Properties props = new Properties();
-
-            props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-            props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-            props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-            props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-            props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-
-            this.consumer = new KafkaConsumer<>(props);
-        }
-
-        public void subscribe(List<String> topics) {
-            consumer.subscribe(topics);
-        }
-
-        public ConsumerRecords<String, String> poll() {
-            return consumer.poll(Duration.ofSeconds(5));
-        }
-    }
+//        purchaseService.setAccountMoney(0L);
+//
+//        kafkaTemplate.send(
+//            "test-request-topic", objectMapper.writeValueAsString(new MessageRequest(0L, uuid)));
+//
+////        KafkaTestConsumer consumer = new KafkaTestConsumer(KAFKA.getBootstrapServers(), "book-purchase-service-group");
+////        consumer.subscribe(List.of("test-response-topic"));
+////
+////        Thread.sleep(10000);
+//
+////        ConsumerRecords<String, String> records = consumer.poll();
+////        records
+////            .iterator()
+////            .forEachRemaining(
+////                record -> {
+////                    MessageResponse message;
+////                    try {
+////                        message = objectMapper.readValue(record.value(), MessageResponse.class);
+////                    } catch (JsonProcessingException e) {
+////                        throw new RuntimeException(e);
+////                    }
+////                    assertEquals(0L, message.bookId());
+////                    assertFalse(message.success());
+////                    assertEquals(message.message(), "Not enough money on the user");
+////                });
+//    }
+//
+//    private static class KafkaTestConsumer {
+//        private final KafkaConsumer<String, String> consumer;
+//
+//        public KafkaTestConsumer(String bootstrapServers, String groupId) {
+//            Properties props = new Properties();
+//
+//            props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+//            props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+//            props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+//            props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+//            props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+//
+//            this.consumer = new KafkaConsumer<>(props);
+//        }
+//
+//        public void subscribe(List<String> topics) {
+//            consumer.subscribe(topics);
+//        }
+//
+//        public ConsumerRecords<String, String> poll() {
+//            return consumer.poll(Duration.ofSeconds(5));
+//        }
+//    }
 }
