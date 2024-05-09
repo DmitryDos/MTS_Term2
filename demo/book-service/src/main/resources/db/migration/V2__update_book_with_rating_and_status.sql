@@ -6,6 +6,7 @@ CREATE TYPE payment_status AS ENUM (
     'PAYMENT_PENDING',
     'PAYMENT_SUCCEED'
     );
+
 CREATE CAST (varchar AS payment_status) WITH INOUT AS IMPLICIT;
 
 ALTER TABLE books
